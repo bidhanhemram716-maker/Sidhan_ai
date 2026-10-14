@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b16">
+
+<title>Sidhan AI — Your AI Assistant</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #080b16;
+    --panel: #101526;
+    --border: #252c43;
+    --text: #f5f7ff;
+    --muted: #929bb5;
+    --accent: #8b5cf6;
+    --blue: #38bdf8;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+    margin: auto;
+    padding: 18px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    display: grid;
+    place-items: center;
+    font-size: 25px;
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    box-shadow: 0 0 25px #8b5cf633;
+}
+
+.brand h1 {
+    font-size: 21px;
+    letter-spacing: -0.5px;
+}
+
+.brand p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.new-chat {
+    padding: 10px 14px;
+    background: #171d30;
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.new-chat:hover {
+    border-color: var(--accent);
+}
+
+.hero {
+    text-align: center;
+    padding: 45px 10px 28px;
+}
+
+.ai-orb {
+    width: 78px;
+    height: 78px;
+    border-radius: 28px;
+    margin: 0 auto 22px;
+    display: grid;
+    place-items: center;
+    font-size: 40px;
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    box-shadow: 0 0 60px #8b5cf633;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.hero h2 {
+    font-size: clamp(27px, 6vw, 43px);
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #a78bfa, #38bdf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.suggestions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0 auto 25px;
+    width: 100%;
+    max-width: 700px;
+}
+
+.suggestion {
+    background: linear-gradient(145deg, #12182a, #0d1120);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 16px;
+    border-radius: 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s;
+    min-height: 90px;
+}
+
+.suggestion:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.suggestion span {
+    display: block;
+    font-size: 22px;
+    margin-bottom: 9px;
+}
+
+.suggestion strong {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.suggestion small {
+    display: block;
+    margin-top: 5px;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+#messages {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    flex: 1;
+    padding-bottom: 20px;
+}
+
+.message {
+    display: flex;
+    gap: 11px;
+    margin-bottom: 22px;
+    align-items: flex-start;
+    animation: appear 0.25s ease;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.avatar {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #202640;
+}
+
+.message.user .avatar {
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+}
+
+.bubble {
+    padding: 12px 15px;
+    background: #12182a;
+    border: 1px solid var(--border);
+    border-radius: 5px 16px 16px 16px;
+    font-size: 14px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.message.user .bubble {
+    background: #211b40;
+    border-color: #49377b;
+}
+
+.composer {
+    position: sticky;
+    bottom: 0;
+    padding: 12px 0 8px;
+    background: linear-gradient(transparent, var(--bg) 18%);
+}
+
+.input-box {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    background: #111629;
+    border: 1px solid #303852;
+    border-radius: 20px;
+    padding: 10px;
+    max-width: 760px;
+    margin: auto;
+    transition: border 0.2s;
+}
+
+.input-box:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px #8b5cf61a;
+}
+
+textarea {
+    flex: 1;
+    min-width: 0;
+    resize: none;
+    max-height: 120px;
+    background: transparent;
+    color: white;
+    border: none;
+    outline: none;
+    padding: 10px 5px;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+textarea::placeholder {
+    color: #747f9d;
+}
+
+.send {
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #8b5cf6, #0ea5e9);
+    color: white;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.send:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.note {
+    text-align: center;
+    color: #68728d;
+    font-size: 10px;
+    margin: 12px 0 5px;
+}
+
+footer {
+    text-align: center;
+    padding: 18px 0 4px;
+    font-size: 11px;
+    color: #68728d;
+}
+
+@media (max-width: 480px) {
+    .app { padding: 12px; }
+    .brand h1 { font-size: 19px; }
+    .logo { width: 41px; height: 41px; }
+    .new-chat { padding: 9px 10px; }
+    .hero { padding-top: 36px; }
+    .suggestions { gap: 9px; }
+    .suggestion { padding: 12px; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+    <div class="brand">
+        <div class="logo">✦</div>
+        <div>
+            <h1>Sidhan <span class="gradient-text">AI</span></h1>
+            <p>Your personal AI assistant</p>
+        </div>
+    </div>
+
+    <button class="new-chat" id="newChat">＋ New Chat</button>
+</header>
+
+<section class="hero" id="hero">
+    <div class="ai-orb">🤖</div>
+    <h2>Ask anything.<br><span class="gradient-text">Imagine everything.</span></h2>
+    <p>Your ideas, questions and creativity —<br>all in one place.</p>
+</section>
+
+<section class="suggestions" id="suggestions">
+    <button class="suggestion" data-prompt="Teach me coding from the beginning">
+        <span>💻</span>
+        <strong>Learn Coding</strong>
+        <small>Start learning from zero</small>
+    </button>
+
+    <button class="suggestion" data-prompt="Give me creative website ideas">
+        <span>🚀</span>
+        <strong>Website Ideas</strong>
+        <small>Build something amazing</small>
+    </button>
+
+    <button class="suggestion" data-prompt="Write a beautiful romantic poem in Bengali">
+        <span>❤️</span>
+        <strong>Creative Writing</strong>
+        <small>Poems, stories and more</small>
+    </button>
+
+    <button class="suggestion" data-prompt="Explain artificial intelligence in simple Bengali">
+        <span>🧠</span>
+        <strong>Explore AI</strong>
+        <small>Discover something new</small>
+    </button>
+</section>
+
+<main id="messages" aria-live="polite"></main>
+
+<section class="composer">
+    <div class="input-box">
+        <textarea id="prompt" rows="1"
+            placeholder="Message Sidhan AI..."
+            aria-label="Write your message"></textarea>
+
+        <button class="send" id="send" aria-label="Send message">↑</button>
+    </div>
+    <p class="note">Demo version · Connect an AI API for real AI responses.</p>
+</section>
+
+<footer>✦ Made with passion · Sidhan AI © 2026</footer>
+
+</div>
+
+<script>
+const promptBox = document.getElementById("prompt");
+const sendButton = document.getElementById("send");
+const messages = document.getElementById("messages");
+const hero = document.getElementById("hero");
+const suggestions = document.getElementById("suggestions");
+
+function addMessage(text, type) {
+    const row = document.createElement("div");
+    row.className = "message " + type;
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = type === "user" ? "👤" : "✦";
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
+
+    row.append(avatar, bubble);
+    messages.appendChild(row);
+
+    return bubble;
+}
+
+function demoReply(text) {
+    const lower = text.toLowerCase();
+
+    if (lower.includes("hello") || lower.includes("hi") ||
+        lower.includes("হ্যালো") || lower.includes("নমস্কার")) {
+        return "Hello! 👋 Welcome to Sidhan AI! How can I help you today?";
+    }
+
+    if (lower.includes("coding") || lower.includes("code")) {
+        return "💻 Coding শেখার জন্য HTML, CSS ও JavaScript দিয়ে শুরু করো। HTML দিয়ে ওয়েবসাইটের কাঠামো, CSS দিয়ে ডিজাইন এবং JavaScript দিয়ে ফিচার তৈরি করা হয়।";
+    }
+
+    if (lower.includes("bengali") || lower.includes("বাংলা")) {
+        return "অবশ্যই! 😊 আমি এই মুহূর্তে ডেমো মোডে আছি। সত্যিকারের AI-এর মতো বাংলা ভাষায় যেকোনো প্রশ্নের উত্তর পেতে আমাকে AI API-এর সঙ্গে সংযোগ করতে হবে।";
+    }
+
+    return "✨ তোমার প্রশ্নটি পেয়েছি!\n\nএখন Sidhan AI ডেমো মোডে চলছে। সত্যিকারের AI উত্তর চালু করতে একটি AI API নিরাপদভাবে ব্যাকএন্ডের মাধ্যমে সংযোগ করতে হবে।\n\nতোমার প্রশ্ন: " + text;
+}
+
+function sendMessage(text) {
+    text = text.trim();
+    if (!text) return;
+
+    hero.style.display = "none";
+    suggestions.style.display = "none";
+
+    addMessage(text, "user");
+    promptBox.value = "";
+    promptBox.style.height = "auto";
+    sendButton.disabled = true;
+
+    const loading = addMessage("Thinking...", "assistant");
+
+    setTimeout(() => {
+        loading.textContent = demoReply(text);
+        sendButton.disabled = false;
+        promptBox.focus();
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth"
+        });
+    }, 700);
+}
+
+sendButton.addEventListener("click", () => {
+    sendMessage(promptBox.value);
+});
+
+promptBox.addEventListener("input", () => {
+    promptBox.style.height = "auto";
+    promptBox.style.height =
+        Math.min(promptBox.scrollHeight, 120) + "px";
+});
+
+promptBox.addEventListener("keydown", event => {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage(promptBox.value);
+    }
+});
+
+document.querySelectorAll(".suggestion").forEach(button => {
+    button.addEventListener("click", () => {
+        sendMessage(button.dataset.prompt);
+    });
+});
+
+document.getElementById("newChat").addEventListener("click", () => {
+    messages.replaceChildren();
+    hero.style.display = "";
+    suggestions.style.display = "";
+    promptBox.value = "";
+    promptBox.style.height = "auto";
+    sendButton.disabled = false;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+</script>
+</body>
+</html>
