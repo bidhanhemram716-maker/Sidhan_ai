@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sidhan-AI</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #0b1020;
+    color: white;
+    min-height: 100vh;
+}
+
+header {
+    padding: 20px;
+    background: #121a30;
+    border-bottom: 1px solid #263653;
+    text-align: center;
+}
+
+header h1 {
+    color: #42f5b3;
+    font-size: 30px;
+}
+
+header p {
+    color: #aab6cc;
+    margin-top: 8px;
+}
+
+.container {
+    max-width: 750px;
+    margin: auto;
+    padding: 20px;
+}
+
+.welcome {
+    text-align: center;
+    margin: 45px 0 25px;
+}
+
+.welcome h2 {
+    font-size: 27px;
+    margin-bottom: 12px;
+}
+
+.welcome span {
+    color: #42f5b3;
+}
+
+.welcome p {
+    color: #aab6cc;
+    line-height: 1.6;
+}
+
+#messages {
+    min-height: 260px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.message {
+    padding: 13px 16px;
+    margin: 12px 0;
+    border-radius: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.user {
+    background: #1d3557;
+    margin-left: 35px;
+}
+
+.ai {
+    background: #172438;
+    margin-right: 20px;
+    border: 1px solid #263653;
+}
+
+.label {
+    display: block;
+    color: #42f5b3;
+    font-size: 12px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.chat-box {
+    display: flex;
+    gap: 10px;
+    background: #121a30;
+    padding: 12px;
+    border: 1px solid #263653;
+    border-radius: 16px;
+    position: sticky;
+    bottom: 10px;
+}
+
+input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px;
+    background: #0b1020;
+    color: white;
+    border: 1px solid #263653;
+    border-radius: 10px;
+    outline: none;
+    font-size: 16px;
+}
+
+button {
+    padding: 12px 18px;
+    background: #42f5b3;
+    color: #07131a;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.6;
+}
+
+footer {
+    text-align: center;
+    color: #8190aa;
+    font-size: 13px;
+    padding: 25px 10px;
+}
+
+@media (max-width: 480px) {
+    .welcome h2 {
+        font-size: 23px;
+    }
+
+    .container {
+        padding: 12px;
+    }
+
+    button {
+        padding: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🤖 Sidhan-AI</h1>
+    <p>Your Smart AI Assistant</p>
+</header>
+
+<main class="container">
+
+    <section class="welcome">
+        <h2>Hello! Welcome to <span>Sidhan-AI</span></h2>
+        <p>
+            Ask a question, learn something new,<br>
+            or start a conversation!
+        </p>
+    </section>
+
+    <section id="messages" aria-live="polite">
+        <div class="message ai">
+            <span class="label">SIDHAN-AI</span>
+            Hello!  Welcome to Sidhan-AI.
+            <br>How can I help you today?
+        </div>
+    </section>
+
+    <form class="chat-box" id="chatForm">
+        <input
+            type="text"
+            id="userInput"
+            placeholder="Message Sidhan-AI..."
+            autocomplete="off"
+            required
+        >
+        <button type="submit" id="sendBtn">Send ➤</button>
+    </form>
+
+</main>
+
+<footer>
+    © 2026 Sidhan-AI | Made with  by Sidhan
+</footer>
+
+<script>
+const form = document.getElementById("chatForm");
+const input = document.getElementById("userInput");
+const messages = document.getElementById("messages");
+const sendBtn = document.getElementById("sendBtn");
+
+function addMessage(text, type) {
+    const box = document.createElement("div");
+    box.className = "message " + type;
+
+    const label = document.createElement("span");
+    label.className = "label";
+    label.textContent = type === "user" ? "YOU" : "SIDHAN-AI";
+
+    const content = document.createElement("div");
+    content.textContent = text;
+
+    box.appendChild(label);
+    box.appendChild(content);
+    messages.appendChild(box);
+
+    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+    return content;
+}
+
+function getReply(text) {
+    const msg = text.toLowerCase().trim();
+
+    if (/^(hi|hello|hey|হাই|হ্যালো|নমস্কার)\b?/.test(msg)) {
+        return "Hello! 👋 আমি Sidhan-AI। তোমাকে কীভাবে সাহায্য করতে পারি?";
+    }
+
+    if (msg.includes("তোমার নাম") || msg.includes("your name")) {
+        return "আমার নাম Sidhan-AI! 🤖";
+    }
+
+    if (msg.includes("কে বানিয়েছে") || msg.includes("who made you")) {
+        return "আমাকে Sidhan তৈরি করেছেন। ❤️";
+    }
+
+    if (msg.includes("coding") || msg.includes("কোডিং")) {
+        return "কোডিং শিখতে HTML, CSS এবং JavaScript দিয়ে শুরু করতে পারো। 💻";
+    }
+
+    if (msg.includes("সময়") || msg.includes("time")) {
+        return "এখনকার সময় জানতে তোমার ফোনের ঘড়ি দেখো। ⏰";
+    }
+
+    if (msg.includes("ধন্যবাদ") || msg.includes("thank")) {
+        return "তোমাকে স্বাগতম! 😊 আর কী জানতে চাও?";
+    }
+
+    return "তোমার মেসেজ পেয়েছি! 😊 আমি এখনো একটি সাধারণ demo chatbot। আসল AI-এর মতো উত্তর দিতে আমাকে AI API-এর সঙ্গে যুক্ত করতে হবে।";
+}
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addMessage(text, "user");
+    input.value = "";
+    sendBtn.disabled = true;
+
+    setTimeout(function() {
+        addMessage(getReply(text), "ai");
+        sendBtn.disabled = false;
+        input.focus();
+    }, 500);
+});
+</script>
+
+</body>
+</html>
